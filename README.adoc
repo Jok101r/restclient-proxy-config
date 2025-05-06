@@ -1,0 +1,18 @@
+
+= Proxy configuration for RestClient
+
+=== Implementation of proxying for RestClient via:
+
+* host
+* port
+* user
+* password
+* nonProxyHost (separators: *,|;*  _for example "127.0.0.1","10.0.*","*.corp.local","192.168.1.0/24"_)
+
+=== Using HttpClient bp from different packages:
+
+* java.net.http.HttpClient;
+* org.apache.hc.client5.http.classic.HttpClient;
+
+_Note:_
+_If you use java.net.http.HttpClient and you want to log in via the "Authorization" header, your server must return status code '401' in case of an unsuccessful attempt_
