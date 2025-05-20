@@ -16,21 +16,24 @@ public class ProxyUtils {
     return input.matches(regex);
   }
 
-  public static InetAddress parseAddress(String address) {
+  public static InetAddress[] parseAddress(String address) {
     try {
-      return InetAddress.getByName(address);
+      return InetAddress.getAllByName(address);
     } catch (UnknownHostException e) {
       throw new IllegalArgumentException(String.format("Failed to parse address %s", address), e);
     }
   }
 
   private static boolean isInSubnet(String ip, String cidr) {
+    if (!cidr.contains("/"))
+      return cidr.equals(ip);
+
     String[] parts = cidr.split("/");
     String subnetBase = parts[0];
     int prefixLength = Integer.parseInt(parts[1]);
 
-    byte[] ipBytes = parseAddress(ip).getAddress();
-    byte[] subnetBytes = parseAddress(subnetBase).getAddress();
+    byte[] ipBytes = parseAddress(ip)[0].getAddress();
+    byte[] subnetBytes = parseAddress(subnetBase)[0].getAddress();
 
     int fullBytes = prefixLength / 8;
     int remainingBits = prefixLength % 8;

@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -41,7 +42,10 @@ public class RestClientProxyApacheConfig {
     }
 
     log.info("Proxy configuration found in application configuration: {}", httpProxyProperties);
-    Set<String> noProxyHosts = new HashSet<>(Arrays.asList(httpProxyProperties.getNonProxyHosts().split("[|,;]")));
+    Set<String> noProxyHosts = Arrays.stream(httpProxyProperties.getNonProxyHosts().split("[|,;]"))
+        .map(String::trim)
+        .filter(StringUtils::hasText)
+        .collect(Collectors.toSet());
     HttpHost proxy = new HttpHost(httpProxyProperties.getProxyHost(), httpProxyProperties.getProxyPort());
 
     DefaultProxyRoutePlanner routePlanner = new RestClientProxyRoutePlanner(proxy, noProxyHosts);
